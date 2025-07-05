@@ -48,6 +48,6 @@ let targets: [Target] = [
     
 ]
 let project: Project = .makeModule(
-    name: "\(ModulePath.Core.name)_\(ModulePath.Core.Network.rawValue)",
+    name: ModulePath.Core.name + ModulePath.Core.Network.rawValue,
     targets: targets
 )
