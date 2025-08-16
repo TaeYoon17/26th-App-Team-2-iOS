@@ -49,23 +49,30 @@ public final class AppGroupService: AppGroupProtocol {
         guard let appGroupStorage else {
             throw AppGroupServiceError.storageNotExist
         }
-        
-        let groupAppData = try JSONEncoder().encode(activitySelection)
-        let createGroupRequest = GroupCreateRequest(name: groupName, groupApps: groupAppData)
+//        2
+        let groupAppData: Data = try JSONEncoder().encode(activitySelection)
+        let groupAppsString = String(data: groupAppData, encoding: .utf8)!
+        let createGroupRequest = GroupCreateRequest(name: groupName, groupApps: groupAppsString)
         let endPoint = BrakeRouter.GroupsEndPoint<BrakeResponse<GroupInfoResponse>>.create(createGroupRequest)
+        print(endPoint)
+        do {
+            let createGroupResponse: BrakeResponse<GroupInfoResponse> = try await networkProvider.request(endPoint)
+            let appGroup = AppGroup( 
+                name: createGroupResponse.data.name,
+                groupID: createGroupResponse.data.groupId,
+                selection: activitySelection
+            )
+            return appGroup
+        } catch {
+            print(error)
+            fatalError("그룹 생성 오류")
+        }
         
-        let createGroupResponse: BrakeResponse<GroupInfoResponse> = try await networkProvider.request(endPoint)
-        
-        let appGroup = AppGroup(
-            name: createGroupResponse.data.name,
-            groupID: createGroupResponse.data.groupId,
-            selection: activitySelection
-        )
         
 //        let appGroupEntity = try AppGroupEntity(appGroup: appGroup)
 //        try await appGroupStorage.appendAppGroupEntity(appGroupEntity)
         
-        return appGroup
+//        return appGroup
     }
     
     public func updateAppGroup(appGroup: AppGroup) async throws {
@@ -84,8 +91,12 @@ public final class AppGroupService: AppGroupProtocol {
             groupID: appGroup.groupID,
             updateGroupRequest
         )
-        
-        let updateResponse: BrakeResponse<GroupInfoResponse> = try await networkProvider.request(endPoint)
+        do {
+            let updateResponse: BrakeResponse<GroupInfoResponse> = try await networkProvider.request(endPoint)
+        } catch {
+            print(error)
+            fatalError(error.localizedDescription)
+        }
         
         
 //        let appGroupEntity = try AppGroupEntity(appGroup: appGroup)
@@ -97,21 +108,31 @@ public final class AppGroupService: AppGroupProtocol {
             throw AppGroupServiceError.storageNotExist
         }
         
-        let endPoint = BrakeRouter.GroupsEndPoint<BrakeResponse<[GroupInfoResponse]>>.getGroups
-        let getAppGroupsResponse: BrakeResponse<[GroupInfoResponse]> = try await networkProvider.request(endPoint)
+        let endPoint = BrakeRouter.GroupsEndPoint<BrakeResponse<GroupsGetResponse>>.getGroups
+        return nil
+//        do {
+//            let getAppGroupsResponse: BrakeResponse<GroupsGetResponse> = try await networkProvider.request(endPoint)
+//            
+//            let appGroups = try getAppGroupsResponse.data.groups.map { groupInfoResponse in
+//                let data = groupInfoResponse.groupApps.data(using: .utf8)!
+//                let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+//                return AppGroup(
+//                    name: groupInfoResponse.name,
+//                    groupID: groupInfoResponse.groupId,
+//                    selection: selection
+//                )
+//            }
+//            
+//            print("get app groups", appGroups)
+//            return appGroups.first
+//        } catch let error as NetworkError {
+//            print(error.description)
+//            fatalError("get메서드 문제")
+//        } catch {
+//            print(error)
+//            fatalError("get메서드 문제")
+//        }
         
-        let appGroups = try getAppGroupsResponse.data.map { groupInfoResponse in
-            let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: groupInfoResponse.groupApps)
-            return AppGroup(
-                name: groupInfoResponse.name,
-                groupID: groupInfoResponse.groupId,
-                selection: selection
-            )
-        }
-        
-        print(appGroups)
-        
-        return appGroups.first
         
 //        let appGroupEntities = try await appGroupStorage.getAllAppGroupEntities()
 //        guard let appGroupEntity = appGroupEntities.first else {
@@ -125,8 +146,12 @@ public final class AppGroupService: AppGroupProtocol {
             throw AppGroupServiceError.storageNotExist
         }
         let endPoint = BrakeRouter.GroupsEndPoint<EmptyData>.delete(groupID: groupID)
-        
-        
+        do {
+            _ = try await networkProvider.request(endPoint)
+        } catch {
+            print(error)
+            fatalError("delete 에러 발생")
+        }
         
         try await appGroupStorage.deleteAppGroupEntity(groupID: groupID)
     }

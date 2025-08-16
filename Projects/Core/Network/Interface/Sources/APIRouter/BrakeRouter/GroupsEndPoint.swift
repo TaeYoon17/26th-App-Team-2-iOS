@@ -33,7 +33,7 @@ public extension BrakeRouter {
             }
         }
         
-        public var queryParameters:  Encodable? {
+        public var queryParameters: Encodable? {
             switch self {
             case .getGroups: nil
             case .create: nil
@@ -44,10 +44,10 @@ public extension BrakeRouter {
         
         public var bodyParameters: Encodable? {
             switch self {
-            case .create: nil
-            case .delete: nil
-            case .getGroups: nil
-            case .update: nil
+            case .create(let createRequest): return createRequest
+            case .delete: return nil
+            case .getGroups: return nil
+            case .update: return  nil
             }
         }
         

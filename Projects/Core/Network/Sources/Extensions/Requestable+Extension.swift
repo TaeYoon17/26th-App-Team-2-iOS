@@ -38,7 +38,11 @@ extension HTTPRequestProtocol {
            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
        }
         urlRequest.httpMethod = self.httpMethod.rawValue
-        
+#if DEBUG
+        print("httpMethod: \(urlRequest.httpMethod)")
+        print("body: \(urlRequest.httpBody?.count)")
+        print("url: \(urlRequest.url?.absoluteString ?? "")")
+#endif
         return urlRequest
     }
 }
