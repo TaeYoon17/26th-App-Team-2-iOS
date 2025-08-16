@@ -27,8 +27,6 @@ enum AppGroupServiceError: Error {
 
 public final class AppGroupService: AppGroupProtocol {
     
-    
-    
     private let appGroupStorage: AppGroupStorageProtocol?
     
     public init(
