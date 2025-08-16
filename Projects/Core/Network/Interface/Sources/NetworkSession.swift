@@ -25,6 +25,7 @@ public struct NetworkSession {
             return try await urlSession.data(for: request)
         }
         let interceptorURLRequest: URLRequest = try await requestInterceptor.adapt(request)
+        print("adapt 호출 됨!!")
         return try await urlSession.data(for: interceptorURLRequest)
     }
     

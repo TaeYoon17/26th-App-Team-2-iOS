@@ -10,11 +10,11 @@ import Foundation
 
 public struct GroupCreateRequest: Encodable {
     public let name: String
-    public let groupApps: Data
+    public let groupApps: String
     
     public init(
         name: String,
-        groupApps: Data
+        groupApps: String
     ) {
         self.name = name
         self.groupApps = groupApps

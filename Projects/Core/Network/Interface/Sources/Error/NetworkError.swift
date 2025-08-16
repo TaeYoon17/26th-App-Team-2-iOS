@@ -9,7 +9,7 @@ import Foundation
 
 public enum NetworkError: Error {
     case invalidURL
-    case badRequest
+    case badRequest(code: Int)
     case unknown
     case decoding
     case authorization // 토큰 만료 에러입니다.
@@ -23,7 +23,7 @@ public enum NetworkError: Error {
     public var description: String {
         switch self {
         case .invalidURL: "Invalid URL"
-        case .badRequest: "Bad Request From Client"
+        case .badRequest(let code): "Bad Request From Client: \(code)"
         case .unknown: "Unknown Error"
         case .decoding: "Decoding Error"
         case .authorization: "Authorization Error"

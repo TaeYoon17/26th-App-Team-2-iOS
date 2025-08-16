@@ -10,5 +10,9 @@ import Foundation
 public struct GroupInfoResponse: Decodable {
     public let groupId: Int
     public let name: String
-    public let groupApps: Data
+    public let groupApps: String
+}
+
+public struct GroupsGetResponse: Decodable {
+    public let groups: [GroupInfoResponse]
 }
