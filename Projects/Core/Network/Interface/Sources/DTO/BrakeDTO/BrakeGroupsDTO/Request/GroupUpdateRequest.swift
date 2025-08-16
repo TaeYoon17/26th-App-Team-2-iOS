@@ -8,10 +8,12 @@
 import Foundation
 
 public struct GroupUpdateRequest: Encodable {
-    public let groupID: String
+    public let name: String
+    public let groupApps: Data
     
-    public init(groupID: String) {
-        self.groupID = groupID
+    public init(name: String, groupApps: Data) {
+        self.name = name
+        self.groupApps = groupApps
     }
     
 }

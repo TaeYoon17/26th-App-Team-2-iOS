@@ -13,14 +13,14 @@ public extension BrakeRouter {
         public typealias Item = Response
         case getGroups
         case create(GroupCreateRequest)
-        case delete(GroupDeleteRequest)
-        case update(GroupUpdateRequest)
+        case delete(groupID: Int)
+        case update(groupID: Int, GroupUpdateRequest)
         
         public var path: String {
             switch self {
             case .getGroups, .create: "/groups/ios"
-            case .update(let updateRequest): "groups/ios/\(updateRequest.groupID)"
-            case .delete(let deleteRequest): "/groups/\(deleteRequest.groupID)"
+            case .update(let groupID, _): "groups/ios/\(groupID)"
+            case .delete(let groupID): "/groups/\(groupID)"
             }
         }
         

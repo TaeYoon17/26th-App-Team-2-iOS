@@ -8,7 +8,7 @@
 import Foundation
 
 public struct GroupInfoResponse: Decodable {
-    let groupId: Int
-    let name: String
-    let groupApps: Data
+    public let groupId: Int
+    public let name: String
+    public let groupApps: Data
 }
